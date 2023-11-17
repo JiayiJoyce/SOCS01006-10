@@ -1,0 +1,26 @@
+{
+    "id": "444A674B",
+    "path": "~/Desktop/Computational/SOCS01006-10/myfirstshinyapp/app.R",
+    "project_path": "myfirstshinyapp/app.R",
+    "type": "r_source",
+    "hash": "456868636",
+    "contents": "",
+    "dirty": false,
+    "created": 1700216569000.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "91,0",
+        "scrollLine": "75"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1700220683,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1700220683611,
+    "read_only": false,
+    "read_only_alternatives": []
+}
