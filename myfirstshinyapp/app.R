@@ -1,15 +1,6 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 # Week 6 lecture----
 # setup----
-install.packages("shiny")
+
 library(shiny)
 if (!require("pacman")) {
   install.packages("pacman")
@@ -23,16 +14,13 @@ pacman::p_load(
 options(scipen=999)
 data <- read.csv("/Users/chenjiayi/Desktop/Computational/SOCS01006-10/emdat_app.csv")
 
-#the app part----
+#the UI ----
 ui <- fluidPage(
-  
-  # Header
+  theme = bslib::bs_theme(bootswatch = "darkly"),
   h1("Disaster statistics trends"),
-  
-  # Sidebar layout
   sidebarLayout(
     
-    # Sidebar panel
+
     sidebarPanel(
       selectInput(
         inputId = "country",
@@ -54,18 +42,21 @@ ui <- fluidPage(
         min = min(data$Year),
         max = max(data$Year),
         value = c(min(data$Year), max(data$Year)),
-        step = 1,
-        sep = ""
+        step = 7,
+        sep = ""#put space and removes coma
+     
       )
     ),
     
     # Main panel
     mainPanel(
       plotOutput("plot")
+      
     )
   )
 )
 
+# the server-----
 server <- function(input, output, session) {
   
   output$plot <- renderPlot({
@@ -78,10 +69,12 @@ server <- function(input, output, session) {
       filter(country == input$country, 
              Year >= input$year_range[1], 
              Year <= input$year_range[2]) %>%
-      ggplot(aes(Year, .data[[variable]])) +
+      
+      ggplot(aes(Year, .data[[variable]])) +#plot each variable here over years
       geom_line() +
       labs(y = input$variable)
   })
+  
   
 }
 
@@ -89,3 +82,4 @@ shinyApp(ui, server)
 
 
 
+# identify peak, andscrape year
