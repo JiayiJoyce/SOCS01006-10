@@ -75,9 +75,8 @@ server <- function(input, output, session) {
                        "Injuries" = "injuries",
                        "Homelessness" = "homelessness")
    
-      data %>%
+        data %>%
         filter(Year == input$year_for_map) %>%
-        
         ggplot(aes(x= long, y= lat,group=group)) +
         geom_polygon(aes(fill=.data[[which_statistic]]), colour="black") 
     })
