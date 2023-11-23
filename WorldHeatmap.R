@@ -22,33 +22,40 @@ data <- read.csv("/Users/chenjiayi/Desktop/Computational/SOCS01006-10/emdat_app.
 data<- data%>%
   rename(
     region=country
-  )
+  )%>%
+  filter(Year==1969)%>%
+  as_tibble()
+data%>%
+  print(n=48)
 
 mapdata <- map_data("world")
 
-combined_dataset<- left_join(data,mapdata,by="region")
-  # filter(!is.na(data$deaths))
+# mapdata
+
+combined_dataset<- left_join(mapdata,data,by="region")#修改了leftjoin顺序，不知道怎么地图就全了
+    # filter(is.na(long) | is.na(lat))%>%
+    # as_tibble()
+combined_dataset
+
+
 
 map1 <- combined_dataset %>%
-  filter(Year == 2015) %>%
   ggplot(aes(x = long, y = lat, group=group)) +
-  geom_polygon(aes(fill = deaths), colour = "black")+
-  # scale_fill_gradient2(name= "number of deaths",low="green",mid="yellow",high="red",na.value="grey50",guide = "colourbar",midpoint=2500)
-  scale_fill_distiller(
-    name = "number of deaths",
-    palette = "RdYlGn",  # You can choose a different palette if needed
-    na.value = "grey50", guide = "colourbar"
-  )
-  theme_barbie()+
-  theme(
-    legend.position = "bottom"
-  )
+  geom_map(
+    aes(map_id=region),
+    map = combined_dataset,
+    colour="black"
+  )+
+  geom_polygon(
+    aes(group=group,
+        fill=deaths),
+    colour="black"
+  )+
+  scale_fill_continuous(low = "lightblue",high="lightpink")
+  theme_minimal()
 
-# Display the plot
 print(map1)
 
 
-print(combined_dataset %>%
-        filter(Year == 2013) %>%
-        filter(is.na(long) | is.na(lat)))
+
 
