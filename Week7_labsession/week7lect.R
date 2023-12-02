@@ -1,0 +1,86 @@
+#set-up----
+pacman::p_load(tidyverse, 
+               xml2, 
+               rvest, 
+               robotstxt,
+               shiny,
+               janitor,
+               scico) 
+
+devtools::install_github("thomasp85/scico")
+
+devtools::install_github("calligross/ggthemeassist")
+#set-up completed----
+#the scraping itself----
+url <- "https://en.wikipedia.org/wiki/University_College_London"
+parsed <- read_html(url)
+
+parsed.sub <- html_element(parsed, xpath = '//*[@id="mw-content-text"]/div[1]/table[1]')
+table.df <- html_table(parsed.sub)   
+head(table.df)
+
+
+# clean names
+names(table.df) <-  janitor::make_clean_names(names(table.df))
+
+# Delete empty rows
+empt <- apply(table.df, 1, FUN = function(x) all(is.na(x) | x == ""))
+table.df <- table.df[which(!empt), ]
+
+# Exclude empty columns 
+table.df <- table.df[,-3:-7]
+
+head(table.df)
+#scraping completed----
+
+paths_allowed(paths = "https://en.wikipedia.org/wiki/University_of_Cambridge")
+
+
+url_list <- c(
+  "https://en.wikipedia.org/wiki/University_College_London",
+  "https://en.wikipedia.org/wiki/University_of_Cambridge",
+  "https://en.wikipedia.org/wiki/University_of_Oxford"
+)
+
+
+
+
+url <- "https://en.wikipedia.org/wiki/University_College_London"
+
+download.file(url, destfile = "scraped_page.html", quiet = FALSE)
+
+target <- read_html("scraped_page.html")
+
+# If you want character vector output
+target1 <- target %>%
+  html_nodes(xpath = '//*[@id="mw-content-text"]/div[1]/table[1]') %>%
+  html_text() 
+
+# If you want table output 
+target2 <- target %>%
+  html_nodes(xpath = '//*[@id="mw-content-text"]/div[1]/table[1]') %>%
+  html_table()
+
+# writing function------
+
+get_table_from_wiki <- function(url){
+  
+  download.file(url, destfile = "scraped_page.html", quiet = TRUE)
+  
+  target <- read_html("scraped_page.html")
+  
+  table <- target %>%
+    html_nodes(xpath = '//*[@id="mw-content-text"]/div[1]/table[1]') %>%
+    html_table() 
+  
+  return(table)
+}
+
+# Automating data collection-----
+#Testing
+get_table_from_wiki(url_list[[2]])
+
+#Automation
+library(purrr)
+map(url_list, get_table_from_wiki)
+
