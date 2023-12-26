@@ -6,13 +6,11 @@ pacman::p_load(tidyverse,
                shiny,
                janitor,
                scico) 
-install.packages("robotstxt")
-install.packages("rvest")
-install.packages("xml2")
+
 devtools::install_github("thomasp85/scico")
 
 devtools::install_github("calligross/ggthemeassist")
-1#set-up completed----
+#set-up completed----
 #the scraping itself----
 url <- "https://en.wikipedia.org/wiki/University_College_London"
 parsed <- read_html(url)
@@ -49,7 +47,7 @@ url_list <- c(
 
 url <- "https://en.wikipedia.org/wiki/University_College_London"
 
-download.file(url, destfile = "scraped_page.html", quiet = TRUE)
+download.file(url, destfile = "scraped_page.html", quiet = FALSE)
 
 target <- read_html("scraped_page.html")
 
