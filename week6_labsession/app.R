@@ -1,25 +1,83 @@
 #
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
+# Week 06 Lab Problem Set 
+# Disaster Statistics Trend App based on EMDAT dataset
 #
-# Find out more about building applications with Shiny here:
+# 
 #
-#    http://shiny.rstudio.com/
+#    
 #
+# SETUP
+if (!require(shiny)) install.packages("shiny")
+if (!require(ggplot2)) install.packages("ggplot2")
+if (!require(dplyr)) install.packages("dplyr")
 
-# setup----
-install.packages("shiny")
 library(shiny)
-if (!require("pacman")) {
-  install.packages("pacman")
+library(ggplot2)
+library(dplyr)
+
+# Read data from CSV
+data <- read.csv("/Users/chenjiayi/Downloads/emdat_app.csv")
+
+ui <- fluidPage(
+  
+  # Header
+  h1("Disaster statistics trends"),
+  
+  # Sidebar layout
+  sidebarLayout(
+    
+    # Sidebar panel
+    sidebarPanel(
+      selectInput(
+        inputId = "country",
+        label = "Select country",
+        choices = unique(data$country),
+        selected = "Belgium"
+      ),
+      
+      selectInput(
+        inputId = "variable",
+        label = "Select variable",
+        choices = c("Deaths", "Injuries", "Homelessness"),
+        selected = "Deaths"
+      ),
+      
+      sliderInput(
+        inputId = "year_range",
+        label = "Select year range",
+        min = min(data$Year),
+        max = max(data$Year),
+        value = c(min(data$Year), max(data$Year)),
+        step = 1,
+        sep = ""
+      )
+    ),
+    
+    # Main panel
+    mainPanel(
+      plotOutput("plot")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  
+  output$plot <- renderPlot({
+    variable <- switch(input$variable,
+                       "Deaths" = "deaths",
+                       "Injuries" = "injuries",
+                       "Homelessness" = "homelessness")
+    
+    data %>%
+      filter(country == input$country, 
+             Year >= input$year_range[1], 
+             Year <= input$year_range[2]) %>%
+      ggplot(aes(Year, .data[[variable]])) +
+      geom_line() +
+      labs(y = input$variable)
+  })
+  
 }
 
-pacman::p_load(
-  shiny,
-  ggplot2,
-  dplyr) 
-
-options(scipen=999)
-data <- read.csv("/Users/chenjiayi/Desktop/Computational/SOCS01006-10/emdat_app.csv")
-
+shinyApp(ui, server)
 

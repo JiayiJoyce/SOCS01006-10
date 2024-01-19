@@ -1,4 +1,4 @@
-# setup----
+# setup----（basic structure awaites to be filled in)----
 library(shiny)
 pacman::p_load(
   shiny,

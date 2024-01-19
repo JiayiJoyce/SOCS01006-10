@@ -12,7 +12,7 @@ pacman::p_load(
   dplyr) 
 
 options(scipen=999)
-data <- read.csv("/Users/chenjiayi/Desktop/Computational/SOCS01006-10/emdat_app.csv")
+data <- read.csv("/Users/chenjiayi/Desktop/Computational/PublicRepoforSOCS0100Wk3/EMDAT.csv")
 
 #the UI ----
 ui <- fluidPage(
@@ -82,4 +82,4 @@ shinyApp(ui, server)
 
 
 
-# identify peak, andscrape year
+# identify peak, and scrape year
